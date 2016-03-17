@@ -1,0 +1,10 @@
+// 描画
+var line = new string('-', 80);
+var n = 1;
+foreach (var fontName in fonts)
+{
+    Console.WriteLine($"{n}/{fonts.Count}");
+    // ファイル名を出力
+    _doc.Add(new Paragraph(line, _defaultFont));
+    _doc.Add(new Paragraph(fontName, _defaultFont));
+
