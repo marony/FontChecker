@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,23 +12,18 @@ namespace FontChecker
     {
         public static IEnumerable<string> Search(string directory, string[] patterns)
         {
-            // FIXME: 検索しながらyieldする
-            var files = new List<string>();
-            InternalSearch(directory, patterns, files);
-            foreach (var file in files)
-                yield return file;
-        }
-
-        private static void InternalSearch(string directory, string[] patterns, List<string> files)
-        {
             // サブディレクトリの検索
-            foreach (var path in Directory.EnumerateDirectories(directory))
-                InternalSearch(path, patterns, files);
-            // ファイルの検索
-            foreach (var pattern in patterns)
+            foreach (var filePath in Directory.EnumerateDirectories(directory).
+                    SelectMany(dirPath => Search(dirPath, patterns)))
             {
-                foreach (var path in Directory.GetFiles(directory, pattern))
-                    files.Add(path);
+                yield return filePath;
+            }
+
+            // ファイルの検索
+            foreach (var filePath in patterns.SelectMany(pattern => 
+                    Directory.GetFiles(directory, pattern)))
+            {
+                yield return filePath;
             }
         }
     }
